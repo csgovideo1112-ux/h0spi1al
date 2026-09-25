@@ -3,35 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==== TELEGRAM WEB APP INIT ====
     const tg = window.Telegram?.WebApp;
     
-       if (tg) {
+    if (tg) {
         tg.expand();
         
-        // ==== ДИАГНОСТИКА ====
-        console.log('=== TELEGRAM DEBUG ===');
-        console.log('Version:', tg.version);
-        console.log('Platform:', tg.platform);
-        console.log('isExpanded:', tg.isExpanded);
-        console.log('viewportHeight:', tg.viewportHeight);
-        console.log('viewportStableHeight:', tg.viewportStableHeight);
-        console.log('Window innerHeight:', window.innerHeight);
-        console.log('Window innerWidth:', window.innerWidth);
-        console.log('requestFullscreen available:', !!tg.requestFullscreen);
-        console.log('======================');
-        // ==== /ДИАГНОСТИКА ====
-        
         if (tg.requestFullscreen) {
-            try { 
-                tg.requestFullscreen(); 
-                console.log('requestFullscreen вызван');
-            } catch (e) { 
-                console.log('Fullscreen error:', e); 
-            }
-        }
-        
-        // ... остальной код
-    }
-        if (tg.requestFullscreen) {
-            try { tg.requestFullscreen(); } catch (e) { console.log('Fullscreen error:', e); }
+            tg.requestFullscreen();
         }
         
         if (tg.disableVerticalSwipes) {
@@ -47,10 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         tg.ready();
-        
-        console.log('Telegram WebApp активен. User:', tg.initDataUnsafe?.user);
-    } else {
-        console.log('Запущено вне Telegram (браузер)');
     }
     // ==== /TELEGRAM WEB APP INIT ====
     
@@ -65,17 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
 
-        // Считаем масштаб по обеим осям, берём минимальный
         const scaleX = windowWidth / BASE_WIDTH;
         const scaleY = windowHeight / BASE_HEIGHT;
         const scale = Math.min(scaleX, scaleY);
 
-        // Фиксируем размеры контейнера
         gameContainer.style.width = BASE_WIDTH + 'px';
         gameContainer.style.height = BASE_HEIGHT + 'px';
         gameContainer.style.transformOrigin = 'top left';
 
-        // Центрируем контейнер в окне
         const offsetX = (windowWidth - BASE_WIDTH * scale) / 2;
         const offsetY = (windowHeight - BASE_HEIGHT * scale) / 2;
 
@@ -85,16 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', resizeGame);
     resizeGame();
     
-    // Пересчёт после разворачивания окна (Telegram / fullscreen)
     setTimeout(resizeGame, 100);
     setTimeout(resizeGame, 500);
     
-    // Слушаем события Telegram
-    if (tg) {
-        if (tg.onEvent) {
-            tg.onEvent('viewportChanged', resizeGame);
-            tg.onEvent('fullscreenChanged', resizeGame);
-        }
+    if (tg && tg.onEvent) {
+        tg.onEvent('viewportChanged', resizeGame);
+        tg.onEvent('fullscreenChanged', resizeGame);
     }
 
 
@@ -105,8 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             if (btn.id === 'btn-map') {
                 startBossFight();
-            } else {
-                console.log(`Кнопка ${btn.id} пока не реализована.`);
             }
         });
     });
@@ -173,8 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function endBossFight(reason) {
         if (battleEnded) return;
         battleEnded = true;
-        
-        console.log('Бой закончен. Причина:', reason);
         
         if (timerInterval) {
             clearInterval(timerInterval);
@@ -342,7 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
         spawnDamageNumber(damage, 'boss');
         
         if (bossHpPercent <= 0) {
-            console.log('Босс повержен!');
             endBossFight('boss-dead');
         }
     }
@@ -358,7 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
         spawnDamageNumber(damage, 'player');
         
         if (playerHpPercent <= 0) {
-            console.log('Игрок погиб!');
             endBossFight('player-dead');
         }
     }
