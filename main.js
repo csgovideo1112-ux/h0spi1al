@@ -5,25 +5,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const BASE_WIDTH = 1920;
     const BASE_HEIGHT = 1080;
 
-        function resizeGame() {
+    function resizeGame() {
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
 
-        // Берём наименьший масштаб, чтобы контейнер полностью влез в экран
-        const scale = Math.min(windowWidth / BASE_WIDTH, windowHeight / BASE_HEIGHT);
-        
-        const scaledWidth = BASE_WIDTH * scale;
-        const scaledHeight = BASE_HEIGHT * scale;
-        
-        // Центрируем контейнер
-        const offsetX = (windowWidth - scaledWidth) / 2;
-        const offsetY = (windowHeight - scaledHeight) / 2;
+        const scale = windowWidth / BASE_WIDTH;
 
-        // Фиксированные размеры виртуального поля + центрирование + масштаб
-        gameContainer.style.transformOrigin = 'top left';
-        gameContainer.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
-        gameContainer.style.width = BASE_WIDTH + 'px';
-        gameContainer.style.height = BASE_HEIGHT + 'px';
+        gameContainer.style.transform = `scale(${scale})`;
+        gameContainer.style.width = windowWidth / scale + 'px';
+        gameContainer.style.height = windowHeight / scale + 'px';
     }
 
     window.addEventListener('resize', resizeGame);
