@@ -1,5 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
+   document.addEventListener('DOMContentLoaded', () => {
+    
+    // ==== TELEGRAM WEB APP INIT ====
+    const tg = window.Telegram?.WebApp;
+    
+    if (tg) {
+        // Разворачиваем на весь экран
+        tg.expand();
+        
+        // Запрашиваем полноэкранный режим (работает в новых версиях Telegram)
+        if (tg.requestFullscreen) {
+            tg.requestFullscreen();
+        }
+        
+        // Отключаем вертикальные свайпы (чтобы игра не сворачивалась)
+        if (tg.disableVerticalSwipes) {
+            tg.disableVerticalSwipes();
+        }
+        
+        // Сообщаем Telegram, что приложение готово
+        tg.ready();
+        
+        // Устанавливаем цвет шапки (под цвет игры)
+        if (tg.setHeaderColor) {
+            tg.setHeaderColor('#1a1a1a');
+        }
+        
+        // Устанавливаем цвет фона
+        if (tg.setBackgroundColor) {
+            tg.setBackgroundColor('#1a1a1a');
+        }
+        
+        console.log('Telegram WebApp активен. User:', tg.initDataUnsafe?.user);
+    } else {
+        console.log('Запущено вне Telegram (браузер)');
+    }
+    // ==== /TELEGRAM WEB APP INIT ====
+    
+    
     const gameContainer = document.getElementById('game-container');
+    
     
     // --- 1. СИСТЕМА МАСШТАБИРОВАНИЯ ---
     const BASE_WIDTH = 1920;
