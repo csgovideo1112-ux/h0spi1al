@@ -3,9 +3,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==== TELEGRAM WEB APP INIT ====
     const tg = window.Telegram?.WebApp;
     
-    if (tg) {
+       if (tg) {
         tg.expand();
         
+        // ==== ДИАГНОСТИКА ====
+        console.log('=== TELEGRAM DEBUG ===');
+        console.log('Version:', tg.version);
+        console.log('Platform:', tg.platform);
+        console.log('isExpanded:', tg.isExpanded);
+        console.log('viewportHeight:', tg.viewportHeight);
+        console.log('viewportStableHeight:', tg.viewportStableHeight);
+        console.log('Window innerHeight:', window.innerHeight);
+        console.log('Window innerWidth:', window.innerWidth);
+        console.log('requestFullscreen available:', !!tg.requestFullscreen);
+        console.log('======================');
+        // ==== /ДИАГНОСТИКА ====
+        
+        if (tg.requestFullscreen) {
+            try { 
+                tg.requestFullscreen(); 
+                console.log('requestFullscreen вызван');
+            } catch (e) { 
+                console.log('Fullscreen error:', e); 
+            }
+        }
+        
+        // ... остальной код
+    }
         if (tg.requestFullscreen) {
             try { tg.requestFullscreen(); } catch (e) { console.log('Fullscreen error:', e); }
         }
