@@ -1,35 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
-   document.addEventListener('DOMContentLoaded', () => {
     
     // ==== TELEGRAM WEB APP INIT ====
     const tg = window.Telegram?.WebApp;
     
     if (tg) {
-        // Разворачиваем на весь экран
         tg.expand();
         
-        // Запрашиваем полноэкранный режим (работает в новых версиях Telegram)
         if (tg.requestFullscreen) {
-            tg.requestFullscreen();
+            try { tg.requestFullscreen(); } catch (e) { console.log('Fullscreen error:', e); }
         }
         
-        // Отключаем вертикальные свайпы (чтобы игра не сворачивалась)
         if (tg.disableVerticalSwipes) {
             tg.disableVerticalSwipes();
         }
         
-        // Сообщаем Telegram, что приложение готово
-        tg.ready();
-        
-        // Устанавливаем цвет шапки (под цвет игры)
         if (tg.setHeaderColor) {
             tg.setHeaderColor('#1a1a1a');
         }
         
-        // Устанавливаем цвет фона
         if (tg.setBackgroundColor) {
             tg.setBackgroundColor('#1a1a1a');
         }
+        
+        tg.ready();
         
         console.log('Telegram WebApp активен. User:', tg.initDataUnsafe?.user);
     } else {
@@ -40,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const gameContainer = document.getElementById('game-container');
     
-    
     // --- 1. СИСТЕМА МАСШТАБИРОВАНИЯ ---
     const BASE_WIDTH = 1920;
     const BASE_HEIGHT = 1080;
@@ -49,15 +41,37 @@ document.addEventListener('DOMContentLoaded', () => {
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
 
-        const scale = windowWidth / BASE_WIDTH;
+        // Считаем масштаб по обеим осям, берём минимальный
+        const scaleX = windowWidth / BASE_WIDTH;
+        const scaleY = windowHeight / BASE_HEIGHT;
+        const scale = Math.min(scaleX, scaleY);
 
-        gameContainer.style.transform = `scale(${scale})`;
-        gameContainer.style.width = windowWidth / scale + 'px';
-        gameContainer.style.height = windowHeight / scale + 'px';
+        // Фиксируем размеры контейнера
+        gameContainer.style.width = BASE_WIDTH + 'px';
+        gameContainer.style.height = BASE_HEIGHT + 'px';
+        gameContainer.style.transformOrigin = 'top left';
+
+        // Центрируем контейнер в окне
+        const offsetX = (windowWidth - BASE_WIDTH * scale) / 2;
+        const offsetY = (windowHeight - BASE_HEIGHT * scale) / 2;
+
+        gameContainer.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
     }
 
     window.addEventListener('resize', resizeGame);
     resizeGame();
+    
+    // Пересчёт после разворачивания окна (Telegram / fullscreen)
+    setTimeout(resizeGame, 100);
+    setTimeout(resizeGame, 500);
+    
+    // Слушаем события Telegram
+    if (tg) {
+        if (tg.onEvent) {
+            tg.onEvent('viewportChanged', resizeGame);
+            tg.onEvent('fullscreenChanged', resizeGame);
+        }
+    }
 
 
     // --- 2. ЛОГИКА КНОПОК МЕНЮ ---
