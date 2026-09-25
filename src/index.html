@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        
+        <!-- ================= ЛОББИ ================= -->
+        <div id="lobby-screen" class="screen">
+            <div id="bg-layer-lobby"></div>
+            <div id="top-menu-bg"></div>
+            
+            <!-- Игрок в лобби -->
+            <div id="player-lobby-sprite"></div>
+            
+            <div id="ui-layer">
+                <div id="top-menu">
+                    <div class="menu-text" id="btn-map">Map</div>
+                    <div class="menu-text" id="btn-stats">Stats</div>
+                    <div class="menu-text" id="btn-money">Money</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= БИТВА С БОССОМ ================= -->
+        <div id="boss-screen" class="screen hidden">
+            <div id="bg-layer-boss"></div>
+            
+            <div id="boss-sprite"></div>
+            
+            <div id="hand-sprite"></div>
+            
+            <div id="damage-layer"></div>
+            
+            <div id="battle-hud">
+                <div class="hud-side hud-left">
+                    <div class="hud-bar-container">
+                        <div class="hud-bar-fill" id="player-hp-fill"></div>
+                        <div class="hud-bar-overlay"></div>
+                    </div>
+                    <div class="hud-hp-text hud-hp-text-left" id="player-hp-text">500</div>
+                    <div class="hud-icon hud-icon-dead" id="player-hud-dead"></div>
+                    <div class="hud-icon hud-icon-alive" id="player-hud-icon"></div>
+                </div>
+
+                <div class="hud-timer" id="battle-timer">15:00</div>
+
+                <div class="hud-side hud-right">
+                    <div class="hud-bar-container">
+                        <div class="hud-bar-fill" id="boss-hp-fill"></div>
+                        <div class="hud-bar-overlay"></div>
+                    </div>
+                    <div class="hud-hp-text hud-hp-text-right" id="boss-hp-text">1000</div>
+                    <div class="hud-icon hud-icon-dead" id="boss-hud-dead"></div>
+                    <div class="hud-icon hud-icon-alive" id="boss-hud-icon"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
