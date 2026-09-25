@@ -1,0 +1,531 @@
+/* ===== ПОДКЛЮЧЕНИЕ ШРИФТА ===== */
+@font-face {
+    font-family: 'Pinzelan';
+    src: url('../assets/fonts/pinzelan-cyrillic.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Сброс стилей */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: #000;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#game-container {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    transform-origin: top left;
+    background-color: #1a1a1a;
+    overflow: hidden;
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ================= ЛОББИ ================= */
+#bg-layer-lobby {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/bg/lobby-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#top-menu-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-image: url('../assets/ui/bg-ui.png');
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: center top;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ===== ИГРОК В ЛОББИ ===== */
+#player-lobby-sprite {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 800px;
+    background-image: url('../assets/sprites/player/p-default.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    z-index: 2;
+    pointer-events: none;
+    
+    animation: playerBreathing 7s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+@keyframes playerBreathing {
+    0%, 100% {
+        transform: translateX(-50%) scaleY(1) scaleX(1);
+    }
+    50% {
+        transform: translateX(-50%) scaleY(1.01) scaleX(0.99);
+    }
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+#top-menu {
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 60px;
+    pointer-events: auto;
+    z-index: 2;
+    align-items: center;
+    height: 60px;
+}
+
+/* ===== МЕНЮ: ТЕКСТОВЫЕ НАДПИСИ ===== */
+.menu-text {
+    font-family: 'Pinzelan', 'Arial', sans-serif;
+    font-size: 32px;
+    color: #e0e0e0;
+    letter-spacing: 4px;
+    cursor: pointer;
+    position: relative;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    transition: color 0.3s ease;
+    user-select: none;
+    overflow: visible;
+}
+
+/* При наведении - кровавый тёмно-красный */
+.menu-text:hover {
+    color: #6b0000;
+    animation: bloodPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes bloodPulse {
+    0%, 100% {
+        text-shadow: 
+            0 0 10px rgba(139, 0, 0, 0.9),
+            0 0 20px rgba(139, 0, 0, 0.6),
+            2px 2px 4px rgba(0, 0, 0, 0.9);
+    }
+    50% {
+        text-shadow: 
+            0 0 15px rgba(180, 0, 0, 1),
+            0 0 30px rgba(139, 0, 0, 0.8),
+            2px 2px 4px rgba(0, 0, 0, 0.9);
+    }
+}
+
+/* ===== КАПЛИ КРОВИ ===== */
+.menu-text::before,
+.menu-text::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    width: 4px;
+    height: 0;
+    background: linear-gradient(to bottom, #6b0000, #3a0000);
+    border-radius: 0 0 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.menu-text::before {
+    left: 20%;
+}
+
+.menu-text::after {
+    right: 20%;
+}
+
+.menu-text:hover::before {
+    opacity: 1;
+    animation: bloodDrip 1.8s ease-in infinite;
+}
+
+.menu-text:hover::after {
+    opacity: 1;
+    animation: bloodDrip 1.8s ease-in infinite 0.6s;
+}
+
+@keyframes bloodDrip {
+    0% {
+        height: 0;
+        opacity: 1;
+    }
+    60% {
+        height: 40px;
+        opacity: 1;
+    }
+    80% {
+        height: 55px;
+        opacity: 0.8;
+    }
+    100% {
+        height: 60px;
+        opacity: 0;
+    }
+}
+
+
+/* ================= БИТВА С БОССОМ ================= */
+#boss-screen {
+    transition: transform 0.3s ease;
+    transform-origin: center center;
+}
+
+#boss-screen.zoomed {
+    transform: scale(1.15);
+}
+
+#bg-layer-boss {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/bg/mechanic-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* ===== СПРАЙТ БОССА ===== */
+#boss-sprite {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 600px;
+    background-image: url('../assets/sprites/mechanic.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    z-index: 2;
+    pointer-events: none;
+    
+    animation: bossBreathing 6s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+@keyframes bossBreathing {
+    0%, 100% {
+        transform: translateX(-50%) scaleY(1) scaleX(1);
+    }
+    50% {
+        transform: translateX(-50%) scaleY(1.02) scaleX(0.99);
+    }
+}
+
+/* ===== РУКА ИГРОКА ===== */
+#hand-sprite {
+    position: absolute;
+    bottom: -40px;
+    right: -80px;
+    width: 700px;
+    height: 750px;
+    background-image: url('../assets/ui/hand.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    z-index: 3;
+    pointer-events: none;
+    
+    animation: handBreathing 3s ease-in-out infinite;
+    transform-origin: bottom right;
+}
+
+@keyframes handBreathing {
+    0%, 100% {
+        transform: rotate(-20deg) translateY(0) scale(1);
+    }
+    50% {
+        transform: rotate(-20deg) translateY(-15px) scale(1.02);
+    }
+}
+
+@keyframes handPunch {
+    0%   { transform: rotate(-20deg) translateY(0) scale(1); }
+    30%  { transform: rotate(-40deg) translate(-80px, 30px) scale(1.1); }
+    60%  { transform: rotate(-15deg) translate(20px, -10px) scale(1.05); }
+    100% { transform: rotate(-20deg) translateY(0) scale(1); }
+}
+
+#hand-sprite.punching {
+    animation: handPunch 0.35s ease-out forwards !important;
+}
+
+/* ===== HUD ===== */
+#battle-hud {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0 60px;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.hud-side {
+    position: relative;
+    width: 180px;
+    height: 180px;
+}
+
+.hud-bar-container {
+    position: absolute;
+    top: -85px;
+    width: 350px;
+    height: 350px;
+    z-index: 1;
+}
+
+.hud-bar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/ui/bar-hp.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hud-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-image: url('../assets/ui/bar-hp-full.png');
+    background-size: 350px 100%;
+    background-repeat: no-repeat;
+    background-position: left center;
+    z-index: 2;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+.hud-icon {
+    position: absolute;
+    top: 0;
+    width: 180px;
+    height: 180px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.hud-icon-dead {
+    z-index: 3;
+    background-image: url('../assets/ui/icon-dead.png');
+}
+
+.hud-icon-alive {
+    z-index: 4;
+}
+
+.hud-left .hud-bar-container { left: 90px; }
+.hud-left .hud-icon { left: 0; }
+.hud-left .hud-icon-alive { background-image: url('../assets/ui/player-icon.png'); }
+
+.hud-right .hud-bar-container {
+    right: 90px;
+    transform: scaleX(-1);
+}
+.hud-right .hud-icon { right: 0; }
+.hud-right .hud-icon-alive { background-image: url('../assets/ui/mechanic-icon.png'); }
+
+.hud-timer {
+    font-family: 'Pinzelan', 'Arial', sans-serif;
+    font-size: 56px;
+    font-weight: normal;
+    color: #e0e0e0;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.95), 0 0 15px rgba(0, 0, 0, 0.8);
+    letter-spacing: 5px;
+    margin-top: 130px;
+    align-self: flex-start;
+}
+
+.hud-hp-text {
+    position: absolute;
+    top: 130px;
+    font-family: 'Pinzelan', 'Arial', sans-serif;
+    font-size: 22px;
+    color: #e0e0e0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.95);
+    letter-spacing: 2px;
+    white-space: nowrap;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.hud-hp-text-left {
+    left: 90px;
+    width: 350px;
+    text-align: right;
+    padding-right: 5px;
+}
+
+.hud-hp-text-right {
+    right: 90px;
+    width: 350px;
+    text-align: left;
+    padding-left: 5px;
+}
+
+/* ===== ЦИФРЫ УРОНА ===== */
+#damage-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+}
+
+.damage-number {
+    position: absolute;
+    font-family: 'Pinzelan', 'Arial', sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    color: #b30000b0;
+    opacity: 0.85;
+    letter-spacing: 2px;
+    pointer-events: none;
+    animation: damageFloat 0.5s ease-out forwards;
+}
+
+@keyframes damageFloat {
+    0% {
+        transform: translate(-50%, 0) scale(0.5);
+        opacity: 0;
+    }
+    20% {
+        transform: translate(-50%, 20px) scale(1.3);
+        opacity: 0.85;
+    }
+    40% {
+        transform: translate(-50%, 40px) scale(1);
+        opacity: 0.85;
+    }
+    100% {
+        transform: translate(-50%, 180px) scale(0.9);
+        opacity: 0;
+    }
+}
+
+/* ===== АНИМАЦИИ АТАКИ БОССА ===== */
+@keyframes bossDashLeft {
+    0%   { transform: translateX(-50%) translateY(0) scale(1); }
+    100% { transform: translateX(-60%) translateY(40px) scale(1.25); }
+}
+
+@keyframes bossDashRight {
+    0%   { transform: translateX(-60%) translateY(40px) scale(1.25); }
+    100% { transform: translateX(-40%) translateY(80px) scale(1.5); }
+}
+
+@keyframes bossDashCenter {
+    0%   { transform: translateX(-40%) translateY(80px) scale(1.5); }
+    100% { transform: translateX(-50%) translateY(200px) scale(1.9); }
+}
+
+@keyframes bossReturn {
+    0%   { transform: translateX(-50%) translateY(200px) scale(1.9); }
+    100% { transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+#boss-sprite.attacking-left,
+#boss-sprite.attacking-right,
+#boss-sprite.attacking-center,
+#boss-sprite.returning {
+    transform-origin: center center;
+}
+
+#boss-sprite.attacking-left {
+    animation: bossDashLeft 0.25s ease-out forwards !important;
+}
+
+#boss-sprite.attacking-right {
+    animation: bossDashRight 0.25s ease-out forwards !important;
+}
+
+#boss-sprite.attacking-center {
+    animation: bossDashCenter 0.25s ease-out forwards !important;
+    background-image: url('../assets/sprites/mechanic-attack.png') !important;
+}
+
+#boss-sprite.returning {
+    animation: bossReturn 0.4s ease-out forwards !important;
+    background-image: url('../assets/sprites/mechanic.png') !important;
+}
+
+/* ===== ТРЯСКА КАМЕРЫ ===== */
+@keyframes cameraShake {
+    0%, 100% { transform: scale(1.15) translate(0, 0); }
+    10%      { transform: scale(1.15) translate(-8px, 6px); }
+    20%      { transform: scale(1.15) translate(8px, -6px); }
+    30%      { transform: scale(1.15) translate(-6px, -4px); }
+    40%      { transform: scale(1.15) translate(6px, 4px); }
+    50%      { transform: scale(1.15) translate(-4px, 5px); }
+    60%      { transform: scale(1.15) translate(4px, -5px); }
+    70%      { transform: scale(1.15) translate(-3px, 3px); }
+    80%      { transform: scale(1.15) translate(3px, -3px); }
+    90%      { transform: scale(1.15) translate(-2px, 2px); }
+}
+
+#boss-screen.shaking {
+    animation: cameraShake 0.5s ease-out;
+}
