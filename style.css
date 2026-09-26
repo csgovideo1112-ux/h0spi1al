@@ -80,7 +80,6 @@ body {
     pointer-events: none;
 }
 
-/* Прелоадер для боя */
 #battle-preloader {
     position: fixed;
     top: 0;
@@ -179,7 +178,6 @@ body {
     height: 60px;
 }
 
-/* ===== МЕНЮ: ТЕКСТОВЫЕ НАДПИСИ ===== */
 .menu-text {
     font-family: 'Pinzelan', 'Arial', sans-serif;
     font-size: 32px;
