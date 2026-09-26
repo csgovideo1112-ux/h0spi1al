@@ -23,6 +23,11 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    position: fixed;
 }
 
 body {
@@ -38,6 +43,7 @@ body {
     transform-origin: top left;
     background-color: #1a1a1a;
     overflow: hidden;
+    touch-action: none;
 }
 
 .screen {
@@ -60,10 +66,11 @@ body {
     width: 100vw;
     height: 100vh;
     background-color: #000;
+    background-image: url('assets/bg/loading.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     z-index: 999999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     transition: opacity 0.6s ease;
     overflow: hidden;
 }
@@ -73,20 +80,25 @@ body {
     pointer-events: none;
 }
 
-.preloader-img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    user-select: none;
-    -webkit-user-drag: none;
-    animation: preloaderPulse 2.5s ease-in-out infinite;
+/* Прелоадер для боя */
+#battle-preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    background-image: url('assets/bg/loading.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 999998;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
 }
 
-@keyframes preloaderPulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.02); opacity: 0.95; }
+#battle-preloader.hidden-preloader {
+    opacity: 0;
 }
 
 
@@ -167,6 +179,7 @@ body {
     height: 60px;
 }
 
+/* ===== МЕНЮ: ТЕКСТОВЫЕ НАДПИСИ ===== */
 .menu-text {
     font-family: 'Pinzelan', 'Arial', sans-serif;
     font-size: 32px;
@@ -175,62 +188,16 @@ body {
     cursor: pointer;
     position: relative;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    transition: color 0.3s ease;
+    transition: color 0.4s ease, text-shadow 0.4s ease;
     user-select: none;
-    overflow: visible;
 }
 
 .menu-text:hover {
-    color: #6b0000;
-    animation: bloodPulse 1.5s ease-in-out infinite;
-}
-
-@keyframes bloodPulse {
-    0%, 100% {
-        text-shadow: 
-            0 0 10px rgba(139, 0, 0, 0.9),
-            0 0 20px rgba(139, 0, 0, 0.6),
-            2px 2px 4px rgba(0, 0, 0, 0.9);
-    }
-    50% {
-        text-shadow: 
-            0 0 15px rgba(180, 0, 0, 1),
-            0 0 30px rgba(139, 0, 0, 0.8),
-            2px 2px 4px rgba(0, 0, 0, 0.9);
-    }
-}
-
-.menu-text::before,
-.menu-text::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    width: 4px;
-    height: 0;
-    background: linear-gradient(to bottom, #6b0000, #3a0000);
-    border-radius: 0 0 50% 50%;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.menu-text::before { left: 20%; }
-.menu-text::after { right: 20%; }
-
-.menu-text:hover::before {
-    opacity: 1;
-    animation: bloodDrip 1.8s ease-in infinite;
-}
-
-.menu-text:hover::after {
-    opacity: 1;
-    animation: bloodDrip 1.8s ease-in infinite 0.6s;
-}
-
-@keyframes bloodDrip {
-    0% { height: 0; opacity: 1; }
-    60% { height: 40px; opacity: 1; }
-    80% { height: 55px; opacity: 0.8; }
-    100% { height: 60px; opacity: 0; }
+    color: #5a0000;
+    text-shadow: 
+        0 0 8px rgba(255, 80, 80, 0.9),
+        0 0 20px rgba(255, 60, 60, 0.5),
+        2px 2px 4px rgba(0, 0, 0, 0.9);
 }
 
 
