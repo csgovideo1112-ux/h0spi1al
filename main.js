@@ -1,8 +1,35 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // ==== TELEGRAM WEB APP INIT ====
+    const tg = window.Telegram?.WebApp;
+    
+    if (tg) {
+        tg.expand();
+        
+        if (tg.requestFullscreen) {
+            tg.requestFullscreen();
+        }
+        
+        if (tg.disableVerticalSwipes) {
+            tg.disableVerticalSwipes();
+        }
+        
+        if (tg.setHeaderColor) {
+            tg.setHeaderColor('#1a1a1a');
+        }
+        
+        if (tg.setBackgroundColor) {
+            tg.setBackgroundColor('#1a1a1a');
+        }
+        
+        tg.ready();
+    }
+    // ==== /TELEGRAM WEB APP INIT ====
+    
+    
     const gameContainer = document.getElementById('game-container');
     
-    // ===== 1. СИСТЕМА МАСШТАБИРОВАНИЯ (сначала!) =====
+    // --- 1. СИСТЕМА МАСШТАБИРОВАНИЯ ---
     const BASE_WIDTH = 1920;
     const BASE_HEIGHT = 1080;
 
@@ -10,69 +37,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
 
-        const scaleX = windowWidth / BASE_WIDTH;
-        const scaleY = windowHeight / BASE_HEIGHT;
-        const scale = Math.min(scaleX, scaleY);
+        const scale = windowWidth / BASE_WIDTH;
 
-        gameContainer.style.width = BASE_WIDTH + 'px';
-        gameContainer.style.height = BASE_HEIGHT + 'px';
-        gameContainer.style.transformOrigin = 'top left';
-
-        const offsetX = (windowWidth - BASE_WIDTH * scale) / 2;
-        const offsetY = (windowHeight - BASE_HEIGHT * scale) / 2;
-
-        gameContainer.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+        gameContainer.style.transform = `scale(${scale})`;
+        gameContainer.style.width = windowWidth / scale + 'px';
+        gameContainer.style.height = windowHeight / scale + 'px';
     }
-    
-    
-    // ===== 2. TELEGRAM WEB APP INIT =====
-    const tg = window.Telegram?.WebApp;
-    
-    if (tg) {
-        tg.expand();
-        
-        try {
-            if (tg.requestFullscreen) {
-                tg.requestFullscreen();
-            }
-        } catch (e) {
-            console.log('Fullscreen недоступен:', e.message);
-        }
-        
-        if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
-        if (tg.setHeaderColor) tg.setHeaderColor('#1a1a1a');
-        if (tg.setBackgroundColor) tg.setBackgroundColor('#1a1a1a');
-        
-        tg.ready();
-        
-        if (tg.onEvent) {
-            tg.onEvent('viewportChanged', () => {
-                setTimeout(resizeGame, 100);
-                setTimeout(resizeGame, 500);
-            });
-            tg.onEvent('fullscreenChanged', () => {
-                setTimeout(resizeGame, 100);
-                setTimeout(resizeGame, 500);
-            });
-        }
-    }
-    
-    
-    // ===== 3. RESIZE LISTENERS =====
+
     window.addEventListener('resize', resizeGame);
-    window.addEventListener('orientationchange', () => {
-        setTimeout(resizeGame, 200);
-        setTimeout(resizeGame, 500);
-    });
-
     resizeGame();
-    setTimeout(resizeGame, 50);
-    setTimeout(resizeGame, 150);
-    setTimeout(resizeGame, 500);
-    setTimeout(resizeGame, 1000);
-    
-    
-    // ===== 4. ПРЕЛОАДЕР + ЗАГРУЗКА АССЕТОВ =====
+
+
+    // --- 2. ПРЕЛОАДЕР + ЗАГРУЗКА АССЕТОВ ---
     const preloader = document.getElementById('preloader');
     
     const allImages = [
@@ -104,9 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         resizeGame();
     }, 4000);
-    
-    
-    // ===== 5. КНОПКИ МЕНЮ =====
+
+
+    // --- 3. ЛОГИКА КНОПОК МЕНЮ ---
     const buttons = document.querySelectorAll('.menu-text');
 
     buttons.forEach(btn => {
@@ -118,13 +94,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // ===== 6. ПЕРЕХОД В БОЙ + ТАЙМЕР =====
+    // --- 4. ПЕРЕХОД В БОЙ + ТАЙМЕР ---
     const lobbyScreen = document.getElementById('lobby-screen');
     const bossScreen = document.getElementById('boss-screen');
     const timerElement = document.getElementById('battle-timer');
     const bossSprite = document.getElementById('boss-sprite');
     const handSprite = document.getElementById('hand-sprite');
-    const battlePreloader = document.getElementById('battle-preloader');
 
     let battleTimeLeft = 15 * 60;
     let timerInterval = null;
@@ -132,12 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let battleEnded = false;
 
     function startBossFight() {
-        battlePreloader.classList.remove('hidden-preloader');
-        
-        setTimeout(() => {
-            battlePreloader.classList.add('hidden-preloader');
-        }, 1500);
-        
         battleEnded = false;
         turnLocked = false;
         
@@ -203,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // ===== 7. УПРАВЛЕНИЕ HP =====
+    // --- 5. УПРАВЛЕНИЕ HP ---
     const MAX_PLAYER_HP = 500;
     const MAX_BOSS_HP = 1000;
     
@@ -254,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // ===== 8. МЕХАНИКА УДАРА =====
+    // --- 6. МЕХАНИКА УДАРА ---
     const damageLayer = document.getElementById('damage-layer');
     
     const PLAYER_DAMAGE = 30;
