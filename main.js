@@ -63,11 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     
-    // --- 2. ПРЕЛОАДЕР + ЗАГРУЗКА АССЕТОВ ---
+       // --- 2. ПРЕЛОАДЕР + ЗАГРУЗКА АССЕТОВ ---
     const preloader = document.getElementById('preloader');
-    const preloaderStartTime = Date.now();
-    const MIN_PRELOADER_TIME = 4000; // минимум 4 секунды
     
+    // Фоново грузим все картинки (они закэшируются браузером)
     const allImages = [
         'assets/bg/lobby-bg.webp',
         'assets/bg/mechanic-bg.webp',
@@ -83,38 +82,19 @@ document.addEventListener('DOMContentLoaded', () => {
         'assets/sprites/mechanic-attack.webp'
     ];
     
-    let loadedCount = 0;
-    const totalCount = allImages.length;
-    
-    function tryHidePreloader() {
-        if (loadedCount >= totalCount) {
-            const elapsed = Date.now() - preloaderStartTime;
-            const remaining = Math.max(0, MIN_PRELOADER_TIME - elapsed);
-            
-            setTimeout(() => {
-                preloader.classList.add('hidden-preloader');
-                setTimeout(() => {
-                    if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
-                }, 700);
-                
-                resizeGame();
-            }, remaining);
-        }
-    }
-    
     allImages.forEach(src => {
         const img = new Image();
-        img.onload = () => {
-            loadedCount++;
-            tryHidePreloader();
-        };
-        img.onerror = () => {
-            loadedCount++;
-            tryHidePreloader();
-        };
         img.src = src;
     });
     
+    // Скрываем прелоадер РОВНО через 4 секунды, независимо от загрузки
+    setTimeout(() => {
+        preloader.classList.add('hidden-preloader');
+        setTimeout(() => {
+            if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+        }, 700);
+        resizeGame();
+    }, 4000);
     
     // --- 3. ЛОГИКА КНОПОК МЕНЮ ---
     const buttons = document.querySelectorAll('.menu-text');
