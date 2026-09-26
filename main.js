@@ -6,10 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tg) {
         tg.expand();
         
-        if (tg.requestFullscreen) {
-            tg.requestFullscreen();
-        }
-        
         if (tg.disableVerticalSwipes) {
             tg.disableVerticalSwipes();
         }
@@ -52,21 +48,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.addEventListener('resize', resizeGame);
+    window.addEventListener('orientationchange', () => {
+        setTimeout(resizeGame, 200);
+    });
+
     resizeGame();
-    
-    setTimeout(resizeGame, 100);
+    setTimeout(resizeGame, 50);
+    setTimeout(resizeGame, 150);
     setTimeout(resizeGame, 500);
-    
-    if (tg && tg.onEvent) {
-        tg.onEvent('viewportChanged', resizeGame);
-        tg.onEvent('fullscreenChanged', resizeGame);
-    }
+    setTimeout(resizeGame, 1000);
     
     
-       // --- 2. ПРЕЛОАДЕР + ЗАГРУЗКА АССЕТОВ ---
+    // --- 2. ПРЕЛОАДЕР + ЗАГРУЗКА АССЕТОВ ---
     const preloader = document.getElementById('preloader');
     
-    // Фоново грузим все картинки (они закэшируются браузером)
     const allImages = [
         'assets/bg/lobby-bg.webp',
         'assets/bg/mechanic-bg.webp',
@@ -87,14 +82,16 @@ document.addEventListener('DOMContentLoaded', () => {
         img.src = src;
     });
     
-    // Скрываем прелоадер РОВНО через 4 секунды, независимо от загрузки
     setTimeout(() => {
-        preloader.classList.add('hidden-preloader');
-        setTimeout(() => {
-            if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
-        }, 700);
+        if (preloader) {
+            preloader.classList.add('hidden-preloader');
+            setTimeout(() => {
+                if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+            }, 700);
+        }
         resizeGame();
     }, 4000);
+    
     
     // --- 3. ЛОГИКА КНОПОК МЕНЮ ---
     const buttons = document.querySelectorAll('.menu-text');
@@ -114,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const timerElement = document.getElementById('battle-timer');
     const bossSprite = document.getElementById('boss-sprite');
     const handSprite = document.getElementById('hand-sprite');
+    const battlePreloader = document.getElementById('battle-preloader');
 
     let battleTimeLeft = 15 * 60;
     let timerInterval = null;
@@ -121,6 +119,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let battleEnded = false;
 
     function startBossFight() {
+        // Показываем прелоадер боя
+        battlePreloader.classList.remove('hidden-preloader');
+        
+        // Скрываем через 1.5 сек
+        setTimeout(() => {
+            battlePreloader.classList.add('hidden-preloader');
+        }, 1500);
+        
         battleEnded = false;
         turnLocked = false;
         
