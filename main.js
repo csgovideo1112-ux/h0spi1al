@@ -29,15 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const gameContainer = document.getElementById('game-container');
     
-    // --- 1. СИСТЕМА МАСШТАБИРОВАНИЯ ---
+   // --- 1. СИСТЕМА МАСШТАБИРОВАНИЯ (ИСПРАВЛЕНА) ---
     const BASE_WIDTH = 1920;
     const BASE_HEIGHT = 1080;
 
-        function resizeGame() {
+    function resizeGame() {
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
 
-        // Масштаб по обеим осям, берём минимальный
+        // Рассчитываем масштаб, берём минимальный коэффициент
         const scaleX = windowWidth / BASE_WIDTH;
         const scaleY = windowHeight / BASE_HEIGHT;
         const scale = Math.min(scaleX, scaleY);
@@ -45,20 +45,24 @@ document.addEventListener('DOMContentLoaded', () => {
         // Фиксируем размеры контейнера
         gameContainer.style.width = BASE_WIDTH + 'px';
         gameContainer.style.height = BASE_HEIGHT + 'px';
-        gameContainer.style.transformOrigin = 'top left';
+        
+        // Переключаем точку трансформации строго на центр холста
+        gameContainer.style.transformOrigin = 'center center';
 
-        // Центрируем контейнер
-        const offsetX = (windowWidth - BASE_WIDTH * scale) / 2;
-        const offsetY = (windowHeight - BASE_HEIGHT * scale) / 2;
-
-        gameContainer.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+        // Идеальное центрирование внутри экрана смартфона
+        gameContainer.style.position = 'absolute';
+        gameContainer.style.left = '50%';
+        gameContainer.style.top = '50%';
+        gameContainer.style.transform = `translate(-50%, -50%) scale(${scale})`;
     }
     
     window.addEventListener('resize', resizeGame);
+    // Дополнительно вешаем на событие смены ориентации экрана
+    window.addEventListener('orientationchange', () => setTimeout(resizeGame, 200));
     resizeGame();
 
 
-    // --- 2. ПРЕЛОАДЕР + ЗАГРУЗКА АССЕТОВ ---
+    // --- 2. ПРЕЛОАДЕР + ЗАГРУЗКА АССЕТОВ (ИСПРАВЛЕНА) ---
     const preloader = document.getElementById('preloader');
     
     const allImages = [
@@ -86,11 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
             preloader.classList.add('hidden-preloader');
             setTimeout(() => {
                 if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+                // Принудительный ресайз после очистки DOM
+                resizeGame(); 
             }, 700);
         }
-        resizeGame();
+        // Даем Telegram WebApp 150мс на завершение анимации развертывания
+        setTimeout(resizeGame, 150);
     }, 4000);
-
 
     // --- 3. ЛОГИКА КНОПОК МЕНЮ ---
     const buttons = document.querySelectorAll('.menu-text');
