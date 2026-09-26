@@ -52,6 +52,44 @@ body {
     display: none !important;
 }
 
+/* ================= ПРЕЛОАДЕР ================= */
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    z-index: 999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s ease;
+    overflow: hidden;
+}
+
+#preloader.hidden-preloader {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.preloader-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    animation: preloaderPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes preloaderPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.95; }
+}
+
+
 /* ================= ЛОББИ ================= */
 #bg-layer-lobby {
     position: absolute;
@@ -59,7 +97,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('assets/bg/lobby-bg.png');
+    background-image: url('assets/bg/lobby-bg.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -71,7 +109,7 @@ body {
     left: 0;
     width: 100%;
     height: 60px;
-    background-image: url('assets/ui/bg-ui.png');
+    background-image: url('assets/ui/bg-ui.webp');
     background-size: 100% auto;
     background-repeat: no-repeat;
     background-position: center top;
@@ -86,7 +124,7 @@ body {
     transform: translateX(-50%);
     width: 900px;
     height: 800px;
-    background-image: url('assets/sprites/player/p-default.png');
+    background-image: url('assets/sprites/player/p-default.webp');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: bottom center;
@@ -212,7 +250,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('assets/bg/mechanic-bg.png');
+    background-image: url('assets/bg/mechanic-bg.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -225,7 +263,7 @@ body {
     transform: translateX(-50%);
     width: 700px;
     height: 600px;
-    background-image: url('assets/sprites/mechanic.png');
+    background-image: url('assets/sprites/mechanic.webp');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: bottom center;
@@ -247,7 +285,7 @@ body {
     right: -80px;
     width: 700px;
     height: 750px;
-    background-image: url('assets/ui/hand.png');
+    background-image: url('assets/ui/hand.webp');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: bottom right;
@@ -307,7 +345,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('assets/ui/bar-hp.png');
+    background-image: url('assets/ui/bar-hp.webp');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     z-index: 1;
@@ -320,7 +358,7 @@ body {
     left: 0;
     height: 100%;
     width: 100%;
-    background-image: url('assets/ui/bar-hp-full.png');
+    background-image: url('assets/ui/bar-hp-full.webp');
     background-size: 350px 100%;
     background-repeat: no-repeat;
     background-position: left center;
@@ -341,21 +379,21 @@ body {
 
 .hud-icon-dead {
     z-index: 3;
-    background-image: url('assets/ui/icon-dead.png');
+    background-image: url('assets/ui/icon-dead.webp');
 }
 
 .hud-icon-alive { z-index: 4; }
 
 .hud-left .hud-bar-container { left: 90px; }
 .hud-left .hud-icon { left: 0; }
-.hud-left .hud-icon-alive { background-image: url('assets/ui/player-icon.png'); }
+.hud-left .hud-icon-alive { background-image: url('assets/ui/player-icon.webp'); }
 
 .hud-right .hud-bar-container {
     right: 90px;
     transform: scaleX(-1);
 }
 .hud-right .hud-icon { right: 0; }
-.hud-right .hud-icon-alive { background-image: url('assets/ui/mechanic-icon.png'); }
+.hud-right .hud-icon-alive { background-image: url('assets/ui/mechanic-icon.webp'); }
 
 .hud-timer {
     font-family: 'Pinzelan', 'Arial', sans-serif;
@@ -455,11 +493,11 @@ body {
 #boss-sprite.attacking-right { animation: bossDashRight 0.25s ease-out forwards !important; }
 #boss-sprite.attacking-center {
     animation: bossDashCenter 0.25s ease-out forwards !important;
-    background-image: url('assets/sprites/mechanic-attack.png') !important;
+    background-image: url('assets/sprites/mechanic-attack.webp') !important;
 }
 #boss-sprite.returning {
     animation: bossReturn 0.4s ease-out forwards !important;
-    background-image: url('assets/sprites/mechanic.png') !important;
+    background-image: url('assets/sprites/mechanic.webp') !important;
 }
 
 @keyframes cameraShake {
