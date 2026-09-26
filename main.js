@@ -61,9 +61,62 @@ document.addEventListener('DOMContentLoaded', () => {
         tg.onEvent('viewportChanged', resizeGame);
         tg.onEvent('fullscreenChanged', resizeGame);
     }
-
-
-    // --- 2. ЛОГИКА КНОПОК МЕНЮ ---
+    
+    
+    // --- 2. ПРЕЛОАДЕР + ЗАГРУЗКА АССЕТОВ ---
+    const preloader = document.getElementById('preloader');
+    const preloaderStartTime = Date.now();
+    const MIN_PRELOADER_TIME = 4000; // минимум 4 секунды
+    
+    const allImages = [
+        'assets/bg/lobby-bg.webp',
+        'assets/bg/mechanic-bg.webp',
+        'assets/ui/bg-ui.webp',
+        'assets/ui/bar-hp.webp',
+        'assets/ui/bar-hp-full.webp',
+        'assets/ui/hand.webp',
+        'assets/ui/icon-dead.webp',
+        'assets/ui/player-icon.webp',
+        'assets/ui/mechanic-icon.webp',
+        'assets/sprites/player/p-default.webp',
+        'assets/sprites/mechanic.webp',
+        'assets/sprites/mechanic-attack.webp'
+    ];
+    
+    let loadedCount = 0;
+    const totalCount = allImages.length;
+    
+    function tryHidePreloader() {
+        if (loadedCount >= totalCount) {
+            const elapsed = Date.now() - preloaderStartTime;
+            const remaining = Math.max(0, MIN_PRELOADER_TIME - elapsed);
+            
+            setTimeout(() => {
+                preloader.classList.add('hidden-preloader');
+                setTimeout(() => {
+                    if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+                }, 700);
+                
+                resizeGame();
+            }, remaining);
+        }
+    }
+    
+    allImages.forEach(src => {
+        const img = new Image();
+        img.onload = () => {
+            loadedCount++;
+            tryHidePreloader();
+        };
+        img.onerror = () => {
+            loadedCount++;
+            tryHidePreloader();
+        };
+        img.src = src;
+    });
+    
+    
+    // --- 3. ЛОГИКА КНОПОК МЕНЮ ---
     const buttons = document.querySelectorAll('.menu-text');
 
     buttons.forEach(btn => {
@@ -75,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 3. ПЕРЕХОД В БОЙ + ТАЙМЕР ---
+    // --- 4. ПЕРЕХОД В БОЙ + ТАЙМЕР ---
     const lobbyScreen = document.getElementById('lobby-screen');
     const bossScreen = document.getElementById('boss-screen');
     const timerElement = document.getElementById('battle-timer');
@@ -153,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- 4. УПРАВЛЕНИЕ HP ---
+    // --- 5. УПРАВЛЕНИЕ HP ---
     const MAX_PLAYER_HP = 500;
     const MAX_BOSS_HP = 1000;
     
@@ -204,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- 5. МЕХАНИКА УДАРА ---
+    // --- 6. МЕХАНИКА УДАРА ---
     const damageLayer = document.getElementById('damage-layer');
     
     const PLAYER_DAMAGE = 30;
