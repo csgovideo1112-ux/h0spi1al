@@ -1,31 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // ==== TELEGRAM WEB APP INIT ====
-    const tg = window.Telegram?.WebApp;
-    
-    if (tg) {
-        tg.expand();
-        
-        if (tg.disableVerticalSwipes) {
-            tg.disableVerticalSwipes();
-        }
-        
-        if (tg.setHeaderColor) {
-            tg.setHeaderColor('#1a1a1a');
-        }
-        
-        if (tg.setBackgroundColor) {
-            tg.setBackgroundColor('#1a1a1a');
-        }
-        
-        tg.ready();
-    }
-    // ==== /TELEGRAM WEB APP INIT ====
-    
-    
     const gameContainer = document.getElementById('game-container');
     
-    // --- 1. СИСТЕМА МАСШТАБИРОВАНИЯ ---
+    // ===== 1. СИСТЕМА МАСШТАБИРОВАНИЯ (сначала!) =====
     const BASE_WIDTH = 1920;
     const BASE_HEIGHT = 1080;
 
@@ -46,10 +23,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
         gameContainer.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
     }
-
+    
+    
+    // ===== 2. TELEGRAM WEB APP INIT =====
+    const tg = window.Telegram?.WebApp;
+    
+    if (tg) {
+        tg.expand();
+        
+        try {
+            if (tg.requestFullscreen) {
+                tg.requestFullscreen();
+            }
+        } catch (e) {
+            console.log('Fullscreen недоступен:', e.message);
+        }
+        
+        if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+        if (tg.setHeaderColor) tg.setHeaderColor('#1a1a1a');
+        if (tg.setBackgroundColor) tg.setBackgroundColor('#1a1a1a');
+        
+        tg.ready();
+        
+        if (tg.onEvent) {
+            tg.onEvent('viewportChanged', () => {
+                setTimeout(resizeGame, 100);
+                setTimeout(resizeGame, 500);
+            });
+            tg.onEvent('fullscreenChanged', () => {
+                setTimeout(resizeGame, 100);
+                setTimeout(resizeGame, 500);
+            });
+        }
+    }
+    
+    
+    // ===== 3. RESIZE LISTENERS =====
     window.addEventListener('resize', resizeGame);
     window.addEventListener('orientationchange', () => {
         setTimeout(resizeGame, 200);
+        setTimeout(resizeGame, 500);
     });
 
     resizeGame();
@@ -59,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(resizeGame, 1000);
     
     
-    // --- 2. ПРЕЛОАДЕР + ЗАГРУЗКА АССЕТОВ ---
+    // ===== 4. ПРЕЛОАДЕР + ЗАГРУЗКА АССЕТОВ =====
     const preloader = document.getElementById('preloader');
     
     const allImages = [
@@ -93,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4000);
     
     
-    // --- 3. ЛОГИКА КНОПОК МЕНЮ ---
+    // ===== 5. КНОПКИ МЕНЮ =====
     const buttons = document.querySelectorAll('.menu-text');
 
     buttons.forEach(btn => {
@@ -105,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 4. ПЕРЕХОД В БОЙ + ТАЙМЕР ---
+    // ===== 6. ПЕРЕХОД В БОЙ + ТАЙМЕР =====
     const lobbyScreen = document.getElementById('lobby-screen');
     const bossScreen = document.getElementById('boss-screen');
     const timerElement = document.getElementById('battle-timer');
@@ -119,10 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let battleEnded = false;
 
     function startBossFight() {
-        // Показываем прелоадер боя
         battlePreloader.classList.remove('hidden-preloader');
         
-        // Скрываем через 1.5 сек
         setTimeout(() => {
             battlePreloader.classList.add('hidden-preloader');
         }, 1500);
@@ -192,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- 5. УПРАВЛЕНИЕ HP ---
+    // ===== 7. УПРАВЛЕНИЕ HP =====
     const MAX_PLAYER_HP = 500;
     const MAX_BOSS_HP = 1000;
     
@@ -243,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- 6. МЕХАНИКА УДАРА ---
+    // ===== 8. МЕХАНИКА УДАРА =====
     const damageLayer = document.getElementById('damage-layer');
     
     const PLAYER_DAMAGE = 30;
